@@ -1,0 +1,197 @@
+{% capture borderWidth %}{{ settings.border_width }}px{% endcapture %}
+{% capture colorBorder %}{{ settings.color_borders }}{% endcapture %}
+
+<style>
+.site-footer {
+  padding: 0 0 30px;
+
+  {% if section.settings.border_footer %}
+    border-top: {{borderWidth}} solid {{colorBorder}};
+    margin-top: 15px;
+  {% endif %}
+}
+
+@media screen and (min-width: 1025px) {
+  .site-footer {
+    {% if section.settings.border_footer %}
+      margin-top: 60px;
+    {% endif %}
+    padding: 60px 0;
+  }
+}
+</style>
+
+<footer class="site-footer small--text-center medium--text-center" role="contentinfo">
+
+  <div class="wrapper">
+
+    <hr class="hr--clear large--hide">
+
+    {% comment %}
+      This checks which parts of the footer are turned on and adjusts the layout accordingly.
+    {% endcomment %}
+
+    {% assign flexifooter = 0 %}
+    {% if section.settings.footer_custom_content != blank or section.settings.footer_custom_title != blank %}
+      {% assign flexifooter = flexifooter | plus: 1 %}
+    {% endif %}
+    {% if section.settings.footer_newsletter_enable or show_social_icons %}
+      {% assign flexifooter = flexifooter | plus: 1 %}
+    {% endif %}
+
+    {% if flexifooter > 0 %}
+
+    {% if section.settings.footer_search_enable and section.settings.footer_newsletter_enable %}
+      <div class="grid">
+        <div class="grid-item medium--two-thirds push--medium--one-sixth large--one-half nav-search">
+          <h3 class="h5 text-center">{{ 'general.search.title' | t }}</h3>
+          {% include 'search-bar' %}
+        </div>
+
+         <div class="grid-item medium--two-thirds push--medium--one-sixth large--one-half nav-search">
+          <h3 class="h5 text-center">{{ 'layout.footer.social_title' | t }}</h3>
+          {% include 'newsletter-form' %}
+        </div>
+      </div>
+      {% elsif section.settings.footer_search_enable %}
+       <div class="grid">
+        <div class="grid-item medium--two-thirds push--medium--one-sixth large--one-half push--large--one-quarter nav-search">
+          <h3 class="h5 text-center">{{ 'general.search.title' | t }}</h3>
+          {% include 'search-bar' %}
+        </div>
+        </div>
+      {% elsif section.settings.footer_newsletter_enable %}
+       <div class="grid">
+        <div class="grid-item medium--two-thirds push--medium--one-sixth large--one-half push--large--one-quarter nav-search">
+           <h3 class="h5 text-center">{{ 'layout.footer.social_title' | t }}</h3>
+          {% include 'newsletter-form' %}
+        </div>
+        </div>
+    {% endif %}
+
+    <hr class="hr--clear hr--small">
+
+      <div class="{% if flexifooter == 1 %}text-center{% else %}grid{% endif %}">
+
+      {% if section.settings.footer_custom_content != blank or section.settings.footer_custom_title != blank %}
+
+        {% if flexifooter == 2 %}
+          <div class="grid-item large--two-thirds">
+        {% endif %}
+
+        {% comment %}
+          Navigation
+        {% endcomment %}
+        <div class="text-left medium--text-center small--text-center">
+                 {% if section.settings.footer_custom_title != blank %}
+          <h3 class="h5 onboarding-header">{{ section.settings.footer_custom_title }}</h3>
+        {% endif %}
+          {% if linklists[section.settings.menu].links != blank %}
+            <ul class="no-bullets">
+              {% for link in linklists[section.settings.menu].links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        {% if flexifooter == 2 %}
+          </div>
+        {% endif %}
+        
+        <div class="grid-item large--one-third small--text-center">
+            <div class="rte">
+              {{ section.settings.footer_custom_content }}
+            </div>
+        </div>
+
+      {% endif %}
+
+      </div>
+
+    {% endif %}
+
+    <hr class="hr--clear">
+
+    {% comment %}
+      Loop through available payment methods and show their icons.
+    {% endcomment %}
+    {% unless shop.enabled_payment_types == empty %}
+      {% assign payment_icons_available = 'amazon_payments,american_express,apple_pay,bitcoin,cirrus,dankort,diners_club,discover,dogecoin,dwolla,forbrugsforeningen,interac,jcb,litecoin,maestro,master,paypal,visa' | split: ',' %}
+      <ul class="inline-list payment-icons text-center">
+        {% for type in shop.enabled_payment_types %}
+          {% if payment_icons_available contains type %}
+            <li>
+              <span class="icon-fallback-text">
+                <span class="icon icon-{{type}}" aria-hidden="true"></span>
+                <span class="fallback-text">{{type | replace: '_',' '}}</span>
+              </span>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endunless %}
+
+    {% if section.settings.bottom_logo %}
+      <div class="text-center">
+      <a href="/" itemprop="url">
+      <img width="70" height="70" src="{{ section.settings.bottom_logo    | img_url: '1060x' }}" alt="{{ shop.name }}" itemprop="logo" > 
+      </a>
+      </div>
+    {%endif%}
+
+    <div class="text-center">
+      <small>
+        {{ 'layout.footer.copyright' | t }} &copy; {{ 'now' | date: "%Y" }} {{ shop.name | link_to: '/' }} | {{ powered_by_link }}<br>
+      </small>
+    </div>
+
+  </div>
+
+</footer>
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "text",
+        "id": "footer_custom_title",
+        "label": "Heading",
+        "default": "Custom content"
+      },
+      {
+        "type": "richtext",
+        "id": "footer_custom_content",
+        "label": "Text",
+        "default": "<p>Add new content to display here.</p>"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_newsletter_enable",
+        "label": "Show newsletter signup"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_search_enable",
+        "label": "Show search"
+      },
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Footer menu"
+      },
+      {
+        "type": "checkbox",
+        "id": "border_footer",
+        "label": "Show border"
+      },
+      {
+        "type": "image_picker",
+        "id": "bottom_logo",
+        "label": "Bottom Logo",
+        "info": "Will be resized to 100 x 100"
+      }
+    ]
+  }
+{% endschema %}

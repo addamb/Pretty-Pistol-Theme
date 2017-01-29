@@ -1,0 +1,206 @@
+{% if section.blocks.size > 0 %}
+{% assign slider_enabled = true %}
+<div class="grid-full">
+  <div class="flexslider grid__item medium--full small--hide" id="flexslider--{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="slideshow-section" data-autoplay="{{ section.settings.slider_home_auto }}" data-speed="{{ section.settings.slider_home_rate }}" data-animation-type="{{ section.settings.slider_animation_type }}">
+    <div class="">
+      <ul class="slides">
+
+        {% for block in section.blocks %}
+        {% if block.settings.image != blank %}
+        <li id="slide--{{ block.id }}" data-flexslider-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          {% if block.settings.link != blank %}<a href="{{ block.settings.link }}" class="slide-link">{% endif %}
+            {{ block.settings.image | img_url: '1060x' | img_tag: block.settings.image.alt }}
+            {% if block.settings.link != blank %}</a>{% endif %}
+          </li>
+          {% else %}
+          <li id="slide--{{ block.id }}" data-flexslider-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+            <span class="slide-link">
+              {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+              {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+            </span>
+          </li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% if section.settings.image_column_on_off %}
+        <div class="grid__item push--large--one-sixteenth large--right medium--hide small--one-third">
+          <ul>
+            {% if section.settings.first_image %}
+            <article>
+              <a href="{{ section.settings.first_link }}">
+                <img width="365" height="127" src="{{ section.settings.first_image  | img_url: '1060x' }}" alt="{{ section.settings.first_image_alt | remove: "files/" }}" itemprop="image">
+              </a>
+            </article>
+            {%endif%}
+            {% if section.settings.second_image %}
+            <article>
+              <a href="{{ section.settings.second_link }}">
+                <img width="365" height="127" src="{{ section.settings.second_image  | img_url: '1060x' }}" alt="{{ section.settings.second_image_alt | remove: "files/" }}" itemprop="image">
+              </a>
+            </article>
+            {%endif%}
+            {% if section.settings.third_image %}
+            <article>
+              <a href="{{ section.settings.third_link }}">
+                <img width="365" height="127" src="{{ section.settings.third_image  | img_url: '1060x' }}" alt="{{ section.settings.third_image_alt | remove: "files/" }}" itemprop="image">
+              </a>
+            </article>
+            {%endif%}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+{% schema %}
+{
+  "name": "Slideshow / Image Column",
+  "class": "index-section",
+  "settings": [
+  {
+    "type": "header",
+    "content": "Image Column Settings"
+  },
+  {
+    "type": "checkbox",
+    "id": "image_column_on_off",
+    "label": "Show Image Column"
+  },
+  {
+    "type": "image_picker",
+    "id": "first_image",
+    "label": "First Image",
+    "info": "Will be rescaled to 365 X 127"
+  },
+  {
+    "type": "url",
+    "id": "first_link",
+    "label": "First Image link"
+  },
+  {
+    "type": "text",
+    "id": "first_image_alt",
+    "label": "First Image alt text"
+  },
+  {
+    "type": "image_picker",
+    "id": "second_image",
+    "label": "Second Image",
+    "info": "Will be rescaled to 365 X 127"
+  },
+  {
+    "type": "url",
+    "id": "second_link",
+    "label": "Second Image link"
+  },
+  {
+    "type": "text",
+    "id": "second_image_alt",
+    "label": "Second Image alt text"
+  },
+  {
+    "type": "image_picker",
+    "id": "third_image",
+    "label": "Third Image",
+    "info": "Will be rescaled to 365 X 127"
+  },
+  {
+    "type": "url",
+    "id": "third_link",
+    "label": "Third Image link"
+  },
+  {
+    "type": "text",
+    "id": "third_image_alt",
+    "label": "Third Image alt text"
+  },
+  {
+    "type": "header",
+    "content": "Silder Settings"
+  },
+  {
+    "type": "checkbox",
+    "id": "slider_home_auto",
+    "label": "Auto-rotate slides"
+  },
+  {
+    "type": "select",
+    "id": "slider_home_rate",
+    "label": "Change slides every",
+    "options": [
+    {
+      "value": "5000",
+      "label": "5 seconds"
+    },
+    {
+      "value": "7000",
+      "label": "7 seconds"
+    },
+    {
+      "value": "10000",
+      "label": "10 seconds"
+    },
+    {
+      "value": "15000",
+      "label": "15 seconds"
+    }
+    ]
+  },
+  {
+    "type": "select",
+    "id": "slider_animation_type",
+    "label": "Transition effect",
+    "options": [
+    {
+      "value": "slide",
+      "label": "Slide"
+    },
+    {
+      "value": "fade",
+      "label": "Fade"
+    }
+    ]
+  }
+  ],
+  "blocks" : [
+  {
+    "type": "image",
+    "name": "Slide",
+    "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Slide link"
+    }
+    ]
+  }
+  ],
+  "presets": [
+  {
+    "name": "Slideshow",
+    "category": "Image",
+    "settings": {
+      "image_column_on_off": true,
+      "slider_home_auto": true,
+      "slider_home_rate": "5000",
+      "slider_animation_type": "slide"
+    },
+    "blocks": [
+    {
+      "type": "image"
+    },
+    {
+      "type": "image"
+    }
+    ]
+  }
+  ]
+}
+{% endschema %}
