@@ -120,7 +120,17 @@
   {% comment %}
     Theme dependent JS are loaded here for performance reasons.
   {% endcomment %}
+
+  {{ '//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js' | script_tag }}
+
   <script>
+        jQuery(function() {
+          jQuery("img.lazy").lazyload({
+          effect : "fadeIn", // optional - Take out this line if dont want the fade in / flash effect when images are loaded
+          //failure_limit : 100,  //optional - include only if using images that are not in the natural collection order eg random order like  my site - if so set to no of products in collection but no higher than 50 
+          //threshold : 50 //optional - include if want images starting to load eg 200px before they are on screen - on my page it loads the images more smoothly
+          });
+      });
     //swatch for products
       jQuery(function() {
         jQuery('.swatch :radio').change(function() {
@@ -136,7 +146,7 @@
       });
 
     // Scroll to top
-    jQuery(document).ready(function() {
+    jQuery(function() {
       var offset = 100;
       var duration = 300;
       jQuery(window).scroll(function() {
