@@ -490,6 +490,36 @@ $sectionSpacingSmall: 35px;
   font-family:monospace;
 }
 
+/*================ Scroll to Top=============*/
+.back-to-top {
+  background: none;
+  margin: 0;
+  padding-right: 10px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 70px;
+  height: 70px;
+  z-index: 100;
+  display: none;
+  text-decoration: none;
+  color: $colorBtnPrimary;
+
+    &:hover {
+    color: $colorBtnPrimaryHover;
+    text-decoration: none;
+  }
+
+  &:active,
+  &:focus {
+    color: $colorBtnPrimary;
+  }
+}
+
+.back-to-top i {
+  font-size: 60px;
+}
+
 /*================ Typography ================*/
 
 /*============================================================================
